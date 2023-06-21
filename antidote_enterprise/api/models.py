@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
-
+import uuid
 
 class Provider(models.Model):
     name = models.CharField(max_length=32, unique=True)
@@ -24,7 +24,7 @@ class ProviderUser(models.Model):
 
 
 class Configuration(models.Model):
-    provider_user_id = models.ForeignKey(ProviderUser, on_delete=models.CASCADE)
+    provider_user_id = models.ForeignKey(ProviderUser, on_delete=models.CASCADE, unique=True)
     leverage = models.IntegerField(default=10)
     interval = models.CharField(max_length=10, default="15m")
     margin_type = models.CharField(max_length=10, default="CROSSED")
@@ -44,10 +44,10 @@ class Configuration(models.Model):
 
 
 class License(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, unique=True)
     email = models.CharField(max_length=50, unique=True)
-    license_key = models.CharField(max_length=50, unique=True)
-    expire_date = models.DateTimeField()
+    license_key = models.CharField(max_length=50, unique=True, default=uuid.uuid4())
+    expire_date = models.DateField()
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
