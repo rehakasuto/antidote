@@ -24,7 +24,7 @@ class ProviderUser(models.Model):
 
 
 class Configuration(models.Model):
-    provider_user_id = models.ForeignKey(ProviderUser, on_delete=models.CASCADE, unique=True)
+    provider_user_id = models.OneToOneField(ProviderUser, on_delete=models.CASCADE, primary_key=True)
     leverage = models.IntegerField(default=10)
     interval = models.CharField(max_length=10, default="15m")
     margin_type = models.CharField(max_length=10, default="CROSSED")
@@ -35,8 +35,8 @@ class Configuration(models.Model):
     max_position_count = models.IntegerField(null=True)
     is_bollinger_active = models.BooleanField(default=False)
     check_position_mode = models.BooleanField(default=False)
-    blacklist = models.JSONField()
-    roes = models.JSONField()
+    blacklist = models.JSONField(default=dict)
+    roes = models.JSONField(default=dict)
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -44,7 +44,7 @@ class Configuration(models.Model):
 
 
 class License(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, unique=True)
+    user_id = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     email = models.CharField(max_length=50, unique=True)
     license_key = models.CharField(max_length=50, unique=True, default=uuid.uuid4())
     expire_date = models.DateField()
